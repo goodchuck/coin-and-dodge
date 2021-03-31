@@ -41,14 +41,8 @@ import javax.swing.Timer;
 public class DoubleBuffering extends JFrame implements Runnable {
     
     // 캐릭터 위치, 점수, 더블 버퍼링, 이미지 변수, 마우스 변수, 승리 판정 변수 선언
-	JFrame frame=new JFrame();
-	JLayeredPane lp = new JLayeredPane();	// 화면을 여러장 겹치기 위한 PaneL 레이어
 	GamePanel  gamepanel=new GamePanel();
-	StartPanel startpanel = new StartPanel();
-	endPanel endpanel = new endPanel();
-	scorePanel scorepanel = new scorePanel();
-	MultiPanel multipanel = new MultiPanel();
-	
+	enemy enemy = new enemy();
 	
 	
     int x, y, xDirection, yDirection, score = 0,  충카 = 0, 난이도 = 0;
@@ -87,13 +81,9 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	 // 이미지
 	 ImageIcon StartImage = new  ImageIcon("src/IMAGE/시작배경화면.jpg");
 	 ImageIcon BackImage = new  ImageIcon("src/IMAGE/배경화면.jpg" );
-	 ImageIcon startButton = new  ImageIcon("src/IMAGE/시작버튼.jpg");
-	 ImageIcon startButtonPressed = new  ImageIcon("src/IMAGE/시작버튼.jpg");
 	 ImageIcon 시작화면 = new  ImageIcon("src/IMAGE/시작화면.jpg");
 	 ImageIcon 난이도1 = new  ImageIcon("src/IMAGE/난이도1.jpg");
 	 ImageIcon 난이도2 = new  ImageIcon("src/IMAGE/시작화면.jpg");
-	 ImageIcon 끝화면 = new  ImageIcon("src/IMAGE/끝화면.png");
-	 ImageIcon 도움말 = new ImageIcon("src/IMAGE/캡처.png");
 	
 	// 버튼
 	JButton startButtonImage = new JButton(new ImageIcon("src/IMAGE/시작버튼.jpg"));
@@ -144,8 +134,52 @@ public class DoubleBuffering extends JFrame implements Runnable {
     public final int rectSize = 32; // 코인 크기
     public final int 적rectSize = 50; // 적 크기
     public final Font font = new Font("맑은 고딕", Font.BOLD | Font.ITALIC, 30);
-      
-    Timer m_timer = new Timer(5, new Example());
+
+	public Timer m_timer = new Timer(5, new Clock());	
+    public int getX() {
+		return x;
+	}
+	public void setX(int x) {
+		this.x = x;
+	}
+	public int getY() {
+		return y;
+	}
+	public void setY(int y) {
+		this.y = y;
+	}
+
+
+    public  DoubleBuffering() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
+        // 캐릭터 및 장애물 초기 설정
+        setX(WIDTH/2);
+        setY(HEIGHT / 2);
+        for(int i = 0; i <= 7; i++) {
+        	rectX[i] = new Random().nextInt(WIDTH - rectSize);
+        	rectY[i] = new Random().nextInt(HEIGHT - rectSize);
+            적rectX[i] = new Random().nextInt(WIDTH - 적rectSize);
+            적rectY[i] = new Random().nextInt(HEIGHT - 적rectSize);	
+        }
+        속rectX = new Random().nextInt(WIDTH - rectSize);
+        속rectY = new Random().nextInt(HEIGHT - rectSize);
+        
+        m_timer.start();
+
+		add(gamepanel);
+		setTitle("코인 빨리 줍자!");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(WIDTH, HEIGHT);
+		setVisible(true);
+		setResizable(false); // 창 늘리기 가능/불가
+		
+
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new AL());
+        gamepanel.addMouseListener(new MO());
+
+    }
+
     // 쓰레드 실행 함수
     public void run() {
         try {
@@ -278,33 +312,38 @@ public class DoubleBuffering extends JFrame implements Runnable {
             return false;
         }
     }
-	public class Example implements ActionListener{
+    
+	public class Clock implements ActionListener{
 	
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			// TODO Auto-generated method stub
 			times++;
-			System.out.println(times);
+			//System.out.println(times);
 //******************* 체력 감소 ******************
 			if(times % 100 == 0) {
 	        	Hp -=5;
 	        }
 //******************* 체력 감소 ******************
-			
+			//System.out.println("테스트x축 : " + enemy.getErectX1());
+			//System.out.println("테스트y축 : " + enemy.getErectY1());
 	        // 적군이 주인공을 따라올수있도록
-			for(int l = 0; l <=3; l++)
-			{
 		        if(times % 2 == 0) {
-			    	if(적rectX[l] < x)
+			    	if(enemy.getErectX1() < x)
 			    	{
-			    		if(l==0) {
-			    			적rectX[l] += 3;
-				    		if(적rectY[l] < y)
+			    			//적rectX[l] += 3;
+			    			enemy.setErectX1(enemy.getErectX1()+3); 
+			    			if(enemy.getErectY1()<y)
+			    			{
+			    				enemy.setErectY1(enemy.getErectY1()+3);
+			    			} else if(enemy.getErectY1() > y) {
+			    				enemy.setErectY1(enemy.getErectY1()-3);
+			    			}
+				    		/*if(적rectY[l] < y)
 				    			적rectY[l] += 3;
 				    		else if(적rectY[l] >y)
-				    			적rectY[l] -= 3;	
-			    		}
-			    		if(l==1) {
+				    			적rectY[l] -= 3; */	
+			    	/*	if(l==1) {
 			    			적rectX[l] += 3;
 				    		if(적rectY[l] < y)
 				    			적rectY[l] += 3;
@@ -322,17 +361,23 @@ public class DoubleBuffering extends JFrame implements Runnable {
 				    			적rectY[l] += 5;
 				    		else if(적rectY[l] >y)
 				    			적rectY[l] -= 5;	
-			    		}
-			    	} else if (적rectX[l] >=x)
+			    		} */
+			    	} else if (enemy.getErectX1() >=x)
 			    	{
-			    		if(l==0) {
-				    		적rectX[l] -=3;
-				    		if(적rectY[l] < y)
+				    		//적rectX[l] -=3;
+			    			enemy.setErectX1(enemy.getErectX1()-3); 
+				    	/*	if(적rectY[l] < y)
 				    			적rectY[l] += 3;
 				    		else if(적rectY[l] >y)
-				    			적rectY[l] -= 3;	
+				    			적rectY[l] -= 3;	 */
+			    			if(enemy.getErectY1()<y)
+			    			{
+			    				enemy.setErectY1(enemy.getErectY1()+3);
+			    			} else if(enemy.getErectY1() > y) {
+			    				enemy.setErectY1(enemy.getErectY1()-3);
+			    			}
 			    		}
-			    		if(l==1) {
+			    	/*	if(l==1) {
 				    		적rectX[l] -=3;
 				    		if(적rectY[l] < y)
 				    			적rectY[l] += 3;
@@ -350,9 +395,8 @@ public class DoubleBuffering extends JFrame implements Runnable {
 				    			적rectY[l] += 5;
 				    		else if(적rectY[l] >y)
 				    			적rectY[l] -= 5;
-			    		}
-			    	}
-			}
+			    		} */
+			    	} 
 //******************* 속도  관련 ******************
 		        if(속2 == true && 속 == 0) {
 		        	속 = times;
@@ -390,100 +434,38 @@ public class DoubleBuffering extends JFrame implements Runnable {
 //******************* 피버  관련 ******************
 			}
 		}
-	}
-
-    
-    public  DoubleBuffering() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
-		
-        // 캐릭터 및 장애물 초기 설정
-        x = WIDTH / 2;
-        y = HEIGHT / 2;
-        for(int i = 0; i <= 7; i++) {
-        	rectX[i] = new Random().nextInt(WIDTH - rectSize);
-        	rectY[i] = new Random().nextInt(HEIGHT - rectSize);
-            적rectX[i] = new Random().nextInt(WIDTH - 적rectSize);
-            적rectY[i] = new Random().nextInt(HEIGHT - 적rectSize);	
-        }
-        속rectX = new Random().nextInt(WIDTH - rectSize);
-        속rectY = new Random().nextInt(HEIGHT - rectSize);
-        
-	
-		//****************리스너 설치
-		startButtonImage.addMouseListener(new StartListener());
-
-		// lp사용해서 배경 순서 만들기 
-		lp.add(startpanel, new Integer(4));
-		startpanel.setSize(WIDTH, HEIGHT);
-		lp.add(gamepanel, new Integer(3));
-		gamepanel.setSize(WIDTH, HEIGHT);
-		lp.add(endpanel,new Integer(2)); /// 패널들 변환
-		endpanel.setSize(WIDTH, HEIGHT);
-		lp.add(scorepanel, new Integer(1));
-		scorepanel.setSize(WIDTH, HEIGHT);
-		lp.add(multipanel, new Integer(0));
-		multipanel.setSize(WIDTH, HEIGHT);
-		frame.add(lp);
-		frame.setTitle("코인 빨리 줍자!");
-		frame.setVisible(true);
-		frame.setResizable(false); // 창 늘리기 가능/불가
-		frame.setSize(WIDTH, HEIGHT);
-        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new AL());
-        gamepanel.addMouseListener(new MO());
-    }
-
-    
+/*
     // 더블 버퍼링을 이용해 실제로 그리는 함수
     public void paint(Graphics g) {
         dbImage = createImage(WIDTH, HEIGHT);
         dbg = dbImage.getGraphics();
         paintComponent(dbg);
+
+        dbg.drawImage(시작화면.getImage(), 0,0,  800, 800, this);
+        dbg.drawImage(난이도1.getImage(), 0,0,  800, 800, this);
+		dbg.drawImage(face.getImage(), x, y, 50,50, this);
+		dbg.drawImage(coin2.getImage(), rectX[2], rectY[2], this);
+		dbg.drawImage(Hpbar1.getImage(), 0, 50, 580, 50, this);
+		dbg.drawImage(Hpbar2.getImage(), 87, 70, Hp, 15, this);
+		dbg.drawImage(속도.getImage(),속rectX,속rectY,this);
+		dbg.drawImage(coin.getImage(), rectX[1], rectY[1], this);	
+		dbg.setFont(font);
+		dbg.setColor(Color.WHITE);
+		dbg.drawString("점수 : " + score + " 충돌 횟수 : " + 충카 + "현재 난이도 : "+ 난이도 +" 타이머 : " + times/100 + "초", 2, 62);
+
         g.drawImage(dbImage, 0, 0, this);
+        
     }
     public void paintComponent(Graphics g) {
     	repaint();
-    }
+    } */
     
-//------------------------ 이클립스 실행시 화면 ------------------------------------------------------------
-	public class StartPanel extends JPanel{
-		public void paintComponent(Graphics g){
-			Graphics2D g2d = (Graphics2D)g;
-			//g.clearRect(0,0,WIDTH,HEIGHT);
-			
-			g.drawImage(시작화면.getImage(), 0,0,  800, 800, this);
-
-			startButtonImage.setBounds(150,300,500,55); // 게임시작버튼
-			multiImage.setBounds(150,400,500,55); // 게임시작버튼
-			scoreImage.setBounds(300,500,200,55);
-
-			startButtonImage.setOpaque(false);
-			startButtonImage.setContentAreaFilled(false);
-			startButtonImage.setBorderPainted(false);
-			
-			multiImage.setOpaque(false);
-			multiImage.setContentAreaFilled(false);
-			multiImage.setBorderPainted(false);
-
-			scoreImage.setOpaque(false);
-			scoreImage.setContentAreaFilled(false);
-			scoreImage.setBorderPainted(false);
-
-
-			startpanel.add(startButtonImage);
-			startpanel.add(multiImage);
-			startpanel.add(scoreImage);
-
-			startButtonImage.addMouseListener(new StartListener());
-			multiImage.addMouseListener(new MultiListener());
-			scoreImage.addMouseListener(new ScoreListener());
-		}
-	}
-//------------------------ 이클립스 실행시 화면 ------------------------------------------------------------
 //------------------------ 이클립스 게임 스타트 누를시 화면 ------------------------------------------------------------
 	class GamePanel extends JPanel{
 		public void paintComponent(Graphics g){
-			Graphics2D g2d = (Graphics2D) g;
+			//Graphics2D g2d = (Graphics2D) g;
+			g.drawImage(시작화면.getImage(), 0,0,  800, 800, this);
+
 			g.drawImage(난이도1.getImage(), 0,0,  800, 800, this);
 			g.drawImage(face.getImage(), x, y, 50,50, this);
 			g.drawImage(coin2.getImage(), rectX[2], rectY[2], this);
@@ -494,25 +476,27 @@ public class DoubleBuffering extends JFrame implements Runnable {
 			g.setFont(font);
 			g.setColor(Color.WHITE);
 			g.drawString("점수 : " + score + " 충돌 횟수 : " + 충카 + "현재 난이도 : "+ 난이도 +" 타이머 : " + times/100 + "초", 2, 62);
+
 	        //게임이 끝나지않앗을경우
 	        if(won == false) {
-	            frame.repaint();
+	            repaint();
 	        } if(won == true) {
 	        	m_timer.stop();
 	        }
 	        //체력이 0보다 작아지면 게임 끝
 	        	if(Hp <= 0) {
-					lp.setLayer(endpanel, 6);				// gamePanel 이 앞으로 나오게 함
-					endpanel.setFocusable(true);					// gamePanel이 포커싱될 수 있게 함
-					endpanel.requestFocus();
+					//lp.setLayer(endpanel, 6);				// gamePanel 이 앞으로 나오게 함
+					//endpanel.setFocusable(true);					// gamePanel이 포커싱될 수 있게 함
+					//endpanel.requestFocus();
 					won = true;
 	        	} 
 
 //-------------------------------------------------------- 적 관련 -------------------------------------------------------------	
 	    	    // 기본 적
 		        for(int l = 0; l <=1 ; l++) {
-				    g.drawImage(적.getImage(), 적rectX[0], 적rectY[0], this);
-				    g.drawImage(적.getImage(), 적rectX[1], 적rectY[1], this);
+				    //g.drawImage(적.getImage(), 적rectX[0], 적rectY[0], this);
+				    //g.drawImage(적.getImage(), 적rectX[1], 적rectY[1], this);
+		        	g.drawImage(enemy.적.getImage(), enemy.getErectX1(), enemy.getErectY1(), this);
 		        if(적rectX[l] - circleSize < x && x < 적rectX[l] + rectSize && 적rectY[l] - circleSize < y && y < 적rectY[l] + rectSize)
 		    {
 		        충돌 = true;
@@ -603,19 +587,19 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	        {
 	        	if(xDirection<0){
 	        		g.drawImage(펀치왼.getImage(), x-40,y,this);
-	        		frame.repaint();
+	        		repaint();
 	        	}
 	        	if(xDirection>0) {
 		        	g.drawImage(펀치오.getImage(), x+40,y,this);
-		        	frame.repaint();
+		        	repaint();
 	        	}
 	        	if(yDirection>0) {
 		        	g.drawImage(펀치아.getImage(), x,y+40,this);
-		        	frame.repaint();
+		        	repaint();
 	        	}
 	        	if(yDirection<0) {
 		        	g.drawImage(펀치위.getImage(), x,y-40,this);
-		        	frame.repaint();
+		        	repaint();
 	        	}
         	}
 	        
@@ -775,160 +759,9 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		}
 	}
 //-------------------------------------------------------- 총 관련 -------------------------------------------------------------
-//-------------------------------------------------------- 끝화면 관련 -------------------------------------------------------------	
-	class endPanel extends JPanel{
-		public void paintComponent(Graphics g){
-			Graphics2D g2d = (Graphics2D) g;
-			g.drawImage(끝화면.getImage(), 0,0,  800, 800, this);
-			m_timer.stop();
-		}
-		}
-//-------------------------------------------------------- 끝화면 관련 -------------------------------------------------------------	
-//-------------------------------------------------------- 점수 관련 -------------------------------------------------------------	
-	public class scorePanel extends JPanel{
-		public void paintComponent(Graphics g){
-			Graphics2D g2d = (Graphics2D)g;
-			g.clearRect(0,0,WIDTH,HEIGHT);
-			g.drawString("score", 300, 300);
-
-		}
-	}
-//-------------------------------------------------------- 점수 관련 -------------------------------------------------------------
-	
-//-------------------------------------------------------- 멀티 관련 -------------------------------------------------------------	
-	public class MultiPanel extends JPanel{
-		public void paintComponent(Graphics g){
-			Graphics2D g2d = (Graphics2D)g;
-			//g.clearRect(0,0,WIDTH,HEIGHT);
-			g.drawImage(시작화면.getImage(), 0,0,  800, 800, this);
-			//g.drawImage(게임방법1.getImage(), x, y, 200,200, this);
-			g.drawImage(도움말.getImage(), 45, 50, 700,500, this);
-			g.setFont(font);
-	        g.setColor(Color.WHITE);
-	        g.drawString("팀명 : 비트코인 어드벤처" , 200, 600);
-	        g.drawString("만든이들 : 양태현, 김보성, 이성진, 송태성", 100, 670);
-			mainmenu.setBounds(350,680,100,55);// 게임시작버튼
-			mainmenu.setOpaque(false);
-			mainmenu.setContentAreaFilled(false);
-			mainmenu.setBorderPainted(false);
-			multipanel.add(mainmenu);
-			
-			//mainmenu.addActionListener(new restartListener());
-		}
-	}
-
-//-------------------------------------------------------- 멀티 관련 -------------------------------------------------------------	
-
-	
-		//****************시작 리스너****************
-		class StartListener implements MouseListener {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-
-			public void mouseClicked(MouseEvent e) {
-				startButtonImage.setIcon(startButton);
-			}
-
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			public void mouseExited(MouseEvent e) {
-			}
-
-			public void mousePressed(MouseEvent e) {
-				startButtonImage.setIcon(startButtonPressed);
-			}
-
-			public void mouseReleased(MouseEvent e) {
-					lp.setLayer(gamepanel, 5);
-					m_timer.start();
-					
-					gamepanel.setFocusable(true);
-					gamepanel.requestFocus();
-					frame.repaint();
-				}
-			}
-		
-		//****************스코어 시작 리스너****************
-		class ScoreListener implements MouseListener {
-			public void actionPerformed(ActionEvent e) {
-
-			}
-
-			public void mouseClicked(MouseEvent e) {
-
-
-			}
-
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			public void mouseExited(MouseEvent e) {
-			}
-
-			public void mousePressed(MouseEvent e) {
-
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				lp.setLayer(scorepanel, 6);				// scorePanel 이 앞으로 나오게 함
 
 
 
-				scorepanel.setFocusable(true);					// scorePanel이 포커싱될 수 있게 함
-				scorepanel.requestFocus();
-				frame.repaint();
-			}
-		}
-		//****************멀티 시작 리스너****************
-		class MultiListener implements MouseListener {
-			public void actionPerformed(ActionEvent e) {
 
-			}
-
-			public void mouseClicked(MouseEvent e) {
-
-
-			}
-
-			public void mouseEntered(MouseEvent e) {
-			}
-
-			public void mouseExited(MouseEvent e) {
-			}
-
-			public void mousePressed(MouseEvent e) {
-
-			}
-
-			public void mouseReleased(MouseEvent e) {
-				lp.setLayer(multipanel, 7);				// scorePanel 이 앞으로 나오게 함
-
-
-
-				multipanel.setFocusable(true);					// scorePanel이 포커싱될 수 있게 함
-				multipanel.requestFocus();
-				frame.repaint();
-			}
-		}
-		//****************마지막엔드 리스너****************
-		class EndListener implements ActionListener{
-
-			public void actionPerformed(ActionEvent arg0) {
-				frame.setVisible(false);
-			}
-		}
-		
-	
-		
-    // 메인 함수
-    public static void main(String[] args) {
-        // 클래스 인스턴스 객체 선언
-        DoubleBuffering db = new DoubleBuffering();
-        // 쓰레드 실행
-        Thread t1 = new Thread(db);
-        t1.start();
-    }  
 	}
 	
