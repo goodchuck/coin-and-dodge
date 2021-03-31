@@ -45,7 +45,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	enemy enemy = new enemy();
 	
 	
-    int x, y, xDirection, yDirection, score = 0,  충카 = 0, 난이도 = 0;
+    int x=0, y=0, xDirection, yDirection, score = 0,  충카 = 0, 난이도 = 0;
     int 펀x,펀y;
     int 총알x,총알y;
     boolean xm, xp, ym, yp = false;
@@ -158,8 +158,10 @@ public class DoubleBuffering extends JFrame implements Runnable {
         for(int i = 0; i <= 7; i++) {
         	rectX[i] = new Random().nextInt(WIDTH - rectSize);
         	rectY[i] = new Random().nextInt(HEIGHT - rectSize);
-            적rectX[i] = new Random().nextInt(WIDTH - 적rectSize);
-            적rectY[i] = new Random().nextInt(HEIGHT - 적rectSize);	
+        	enemy.setErectX1(new Random().nextInt(WIDTH - 적rectSize));
+        	enemy.setErectY1(new Random().nextInt(HEIGHT - 적rectSize));
+        	//적rectX[i] = new Random().nextInt(WIDTH - 적rectSize);
+            //적rectY[i] = new Random().nextInt(HEIGHT - 적rectSize);	
         }
         속rectX = new Random().nextInt(WIDTH - rectSize);
         속rectY = new Random().nextInt(HEIGHT - rectSize);
@@ -325,14 +327,12 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	        	Hp -=5;
 	        }
 //******************* 체력 감소 ******************
-			//System.out.println("테스트x축 : " + enemy.getErectX1());
-			//System.out.println("테스트y축 : " + enemy.getErectY1());
 	        // 적군이 주인공을 따라올수있도록
-		        if(times % 2 == 0) {
+		        if(times % 10 == 0) {
 			    	if(enemy.getErectX1() < x)
 			    	{
-			    			//적rectX[l] += 3;
 			    			enemy.setErectX1(enemy.getErectX1()+3); 
+
 			    			if(enemy.getErectY1()<y)
 			    			{
 			    				enemy.setErectY1(enemy.getErectY1()+3);
@@ -493,7 +493,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 
 //-------------------------------------------------------- 적 관련 -------------------------------------------------------------	
 	    	    // 기본 적
-		        for(int l = 0; l <=1 ; l++) {
+		     /*   for(int l = 0; l <=1 ; l++) {
 				    //g.drawImage(적.getImage(), 적rectX[0], 적rectY[0], this);
 				    //g.drawImage(적.getImage(), 적rectX[1], 적rectY[1], this);
 		        	g.drawImage(enemy.적.getImage(), enemy.getErectX1(), enemy.getErectY1(), this);
@@ -509,7 +509,22 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		        };
 		        충카 ++;
 		    } 
-		        } 
+		        } */
+	        	g.drawImage(enemy.적.getImage(), enemy.getErectX1(), enemy.getErectY1(), this);
+	        	if(enemy.getErectX1() - circleSize < x && x < enemy.getErectX1() + circleSize && enemy.getErectY1() - circleSize < y
+	        			&& y < enemy.getErectY1() + circleSize)
+	        	{
+	        		충돌 = true;
+	        		Hp -= 10;
+	        		enemy.setErectX1(new Random().nextInt(800-rectSize));
+	        		enemy.setErectY1(new Random().nextInt(800-rectSize));
+	        		/*if(enemy.getErectX1() <= 400) {
+	        			enemy.setErectY1(0);
+	        		} else {
+	        			enemy.setErectY1(800);
+	        		}; */
+	        		충카 ++;
+	        	}
 //--------------------------------------- 난이도 1------------------------------------------------------------------------
 		        if(score >= 10 || times >=1000)
 		        {
