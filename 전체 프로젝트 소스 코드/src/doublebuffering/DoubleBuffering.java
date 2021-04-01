@@ -43,9 +43,9 @@ public class DoubleBuffering extends JFrame implements Runnable {
     // 캐릭터 위치, 점수, 더블 버퍼링, 이미지 변수, 마우스 변수, 승리 판정 변수 선언
 	GamePanel  gamepanel=new GamePanel();
 	enemy enemy = new enemy();
+	Character ch = new Character();
 	
-	
-    int x=0, y=0, xDirection, yDirection, score = 0,  충카 = 0, 난이도 = 0;
+    int score = 0,  충카 = 0, 난이도 = 0;
     int 펀x,펀y;
     int 총알x,총알y;
     boolean xm, xp, ym, yp = false;
@@ -136,25 +136,12 @@ public class DoubleBuffering extends JFrame implements Runnable {
     public final Font font = new Font("맑은 고딕", Font.BOLD | Font.ITALIC, 30);
 
 	public Timer m_timer = new Timer(5, new Clock());	
-    public int getX() {
-		return x;
-	}
-	public void setX(int x) {
-		this.x = x;
-	}
-	public int getY() {
-		return y;
-	}
-	public void setY(int y) {
-		this.y = y;
-	}
-
 
     public  DoubleBuffering() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);		
         // 캐릭터 및 장애물 초기 설정
-        setX(WIDTH/2);
-        setY(HEIGHT / 2);
+        ch.setX(WIDTH/2);
+        ch.setY(HEIGHT / 2);
         for(int i = 0; i <= 7; i++) {
         	rectX[i] = new Random().nextInt(WIDTH - rectSize);
         	rectY[i] = new Random().nextInt(HEIGHT - rectSize);
@@ -186,7 +173,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
     public void run() {
         try {
             while(true) {
-                move();
+                ch.move();
                 Thread.sleep(5);
             }
         }
@@ -194,7 +181,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
             System.out.println("오류가 발생했습니다.");
         }
     }
-    // 실제로 캐릭터가 이동하는 함수
+  /*  // 실제로 캐릭터가 이동하는 함수
     public void move() {
         x += xDirection;
         y += yDirection;
@@ -206,16 +193,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
             y = circleSize;
         if(y >= WIDTH - circleSize)
             y = WIDTH - circleSize;
-    }
-    
-    // 방향 지정
-    public void setXDirection(int xdir) {
-        xDirection = xdir;
-    }
-    
-    public void setYDirection(int ydir) {
-        yDirection = ydir;
-    }
+    } */
     
     //게임 테스트를 위한 마우스 리스너
     public class MO extends MouseAdapter {
@@ -223,8 +201,10 @@ public class DoubleBuffering extends JFrame implements Runnable {
         public void mousePressed(MouseEvent e) {
             int xCoord = e.getX();
             int yCoord = e.getY();
-            x = xCoord - circleSize / 2;
-            y = yCoord - circleSize / 2;
+            //x = xCoord - circleSize / 2;
+            //y = yCoord - circleSize / 2;
+            ch.setX(xCoord - circleSize / 2);
+            ch.setY(yCoord - circleSize / 2);
             
         }
         @Override
@@ -249,34 +229,37 @@ public class DoubleBuffering extends JFrame implements Runnable {
                 int keyCode = e.getKeyCode();
                 if(keyCode == e.VK_LEFT)
                 {
-                    setXDirection(-3);
+                	
+                	
+                    ch.setXDirection(-3);
+                    System.out.println("키 먹히는지 테스트 왼쪽" + ch.getXDirection());
                     if(속2 == true)
                     {
-                    	setXDirection(-5);
+                    	ch.setXDirection(-5);
                     }
                 }
                 if(keyCode == e.VK_RIGHT)
                 {
-                    setXDirection(+3);
+                    ch.setXDirection(+3);
                     if(속2 == true)
                     {
-                    	setXDirection(+5);
+                    	ch.setXDirection(+5);
                     }
                 }            
                 if(keyCode == e.VK_UP)
                 {
-                    setYDirection(-3);
+                    ch.setYDirection(-3);
                     if(속2 == true)
                     {
-                    	setYDirection(-5);
+                    	ch.setYDirection(-5);
                     }
                 }    
                 if(keyCode == e.VK_DOWN)
                 {
-                    setYDirection(+3);
+                    ch.setYDirection(+3);
                     if(속2 == true)
                     {
-                    	setYDirection(+5);
+                    	ch.setYDirection(+5);
                     }
                 }
                 if(keyCode == e.VK_SPACE)
@@ -292,19 +275,19 @@ public class DoubleBuffering extends JFrame implements Runnable {
                 int keyCode = e.getKeyCode();
                 if(keyCode == e.VK_LEFT)
                 {
-                    setXDirection(0);
+                    ch.setXDirection(0);
                 }
                 if(keyCode == e.VK_RIGHT)
                 {
-                    setXDirection(0);
+                    ch.setXDirection(0);
                 }            
                 if(keyCode == e.VK_UP)
                 {
-                    setYDirection(0);
+                	ch.setYDirection(0);
                 }    
                 if(keyCode == e.VK_DOWN)
                 {
-                    setYDirection(0);
+                	ch.setYDirection(0);
                 }
                 if(keyCode == e.VK_SHIFT)
                 {
@@ -329,14 +312,14 @@ public class DoubleBuffering extends JFrame implements Runnable {
 //******************* 체력 감소 ******************
 	        // 적군이 주인공을 따라올수있도록
 		        if(times % 10 == 0) {
-			    	if(enemy.getErectX1() < x)
+			    	if(enemy.getErectX1() < ch.getX())
 			    	{
 			    			enemy.setErectX1(enemy.getErectX1()+3); 
 
-			    			if(enemy.getErectY1()<y)
+			    			if(enemy.getErectY1()< ch.getY())
 			    			{
 			    				enemy.setErectY1(enemy.getErectY1()+3);
-			    			} else if(enemy.getErectY1() > y) {
+			    			} else if(enemy.getErectY1() > ch.getY()) {
 			    				enemy.setErectY1(enemy.getErectY1()-3);
 			    			}
 				    		/*if(적rectY[l] < y)
@@ -362,7 +345,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 				    		else if(적rectY[l] >y)
 				    			적rectY[l] -= 5;	
 			    		} */
-			    	} else if (enemy.getErectX1() >=x)
+			    	} else if (enemy.getErectX1() >=ch.getX())
 			    	{
 				    		//적rectX[l] -=3;
 			    			enemy.setErectX1(enemy.getErectX1()-3); 
@@ -370,10 +353,10 @@ public class DoubleBuffering extends JFrame implements Runnable {
 				    			적rectY[l] += 3;
 				    		else if(적rectY[l] >y)
 				    			적rectY[l] -= 3;	 */
-			    			if(enemy.getErectY1()<y)
+			    			if(enemy.getErectY1()<ch.getY())
 			    			{
 			    				enemy.setErectY1(enemy.getErectY1()+3);
-			    			} else if(enemy.getErectY1() > y) {
+			    			} else if(enemy.getErectY1() > ch.getY()) {
 			    				enemy.setErectY1(enemy.getErectY1()-3);
 			    			}
 			    		}
@@ -467,7 +450,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 			g.drawImage(시작화면.getImage(), 0,0,  800, 800, this);
 
 			g.drawImage(난이도1.getImage(), 0,0,  800, 800, this);
-			g.drawImage(face.getImage(), x, y, 50,50, this);
+			g.drawImage(face.getImage(), ch.getX(), ch.getY(), 50,50, this);
 			g.drawImage(coin2.getImage(), rectX[2], rectY[2], this);
 			g.drawImage(Hpbar1.getImage(), 0, 50, 580, 50, this);
 			g.drawImage(Hpbar2.getImage(), 87, 70, Hp, 15, this);
@@ -511,8 +494,8 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		    } 
 		        } */
 	        	g.drawImage(enemy.적.getImage(), enemy.getErectX1(), enemy.getErectY1(), this);
-	        	if(enemy.getErectX1() - circleSize < x && x < enemy.getErectX1() + circleSize && enemy.getErectY1() - circleSize < y
-	        			&& y < enemy.getErectY1() + circleSize)
+	        	if(enemy.getErectX1() - circleSize < ch.getX() && ch.getX() < enemy.getErectX1() + circleSize && enemy.getErectY1() - circleSize < ch.getY()
+	        			&& ch.getY() < enemy.getErectY1() + circleSize)
 	        	{
 	        		충돌 = true;
 	        		Hp -= 10;
@@ -532,7 +515,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		        	//적 생성
 				    g.drawImage(적2.getImage(), 적rectX[2], 적rectY[2], this);
 				    //적군이 주인공이랑 닿을때 조건문
-			        if(적rectX[2] - circleSize < x && x < 적rectX[2] + rectSize && 적rectY[2] - circleSize < y && y < 적rectY[2] + rectSize)
+			        if(적rectX[2] - circleSize < ch.getX() && ch.getX() < 적rectX[2] + rectSize && 적rectY[2] - circleSize < ch.getY() && ch.getY() < 적rectY[2] + rectSize)
 				    {
 			        	충돌 = true;
 				        Hp -= 20;	
@@ -552,7 +535,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		        	//적군 생성
 				    g.drawImage(적3.getImage(), 적rectX[3], 적rectY[3], this);
 				    //적군이 주인공이랑 닿을때
-			        if(적rectX[3] - circleSize < x && x < 적rectX[3] + rectSize && 적rectY[3] - circleSize < y && y < 적rectY[3] + rectSize)
+			        if(적rectX[3] - circleSize < ch.getX() && ch.getX() < 적rectX[3] + rectSize && 적rectY[3] - circleSize < ch.getY() && ch.getY() < 적rectY[3] + rectSize)
 				    {
 			        	충돌 = true;
 				        Hp -= 30;
@@ -569,7 +552,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 //-------------------------------------------------------- 적 관련 -------------------------------------------------------------	
 //-----------------------------------------------------캐릭터랑 코인관련-----------------------------------------------------
 		        for(int i = 0; i <= 7; i++) {
-			        if(rectX[i] - circleSize < x && x < rectX[i] + rectSize && rectY[i] - circleSize < y && y < rectY[i] + rectSize)
+			        if(rectX[i] - circleSize < ch.getX() && ch.getX() < rectX[i] + rectSize && rectY[i] - circleSize < ch.getY() && ch.getY() < rectY[i] + rectSize)
 			        {
 			            score++;
 			            rectX[i] = new Random().nextInt(800 - rectSize);
@@ -582,7 +565,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 //-----------------------------------------------------캐릭터랑 코인관련-----------------------------------------------------
 //-------------------------------------------------------- 속도 관련 -------------------------------------------------------------		        
 		        // 속도 아이콘과 캐릭터 충돌 감지
-		        if(속rectX  - circleSize < x && x < 속rectX  + rectSize && 속rectY  - circleSize < y && y < 속rectY  + rectSize)
+		        if(속rectX  - circleSize < ch.getX() && ch.getX() < 속rectX  + rectSize && 속rectY  - circleSize < ch.getY() && ch.getY() < 속rectY  + rectSize)
 		        {
 		        	속2 = true;
 		        	속rectX = 800;
@@ -593,11 +576,11 @@ public class DoubleBuffering extends JFrame implements Runnable {
 //-------------------------------------------------------- 속도 관련 -------------------------------------------------------------
 //-------------------------------------------------------- 충돌 관련 -------------------------------------------------------------
 		        if(충돌 == true) {
-		        	g.drawImage(colface.getImage(), x, y, this);	
+		        	g.drawImage(colface.getImage(), ch.getX(), ch.getY(), this);	
 		        }
 //-------------------------------------------------------- 충돌 관련 -------------------------------------------------------------		        
 //-------------------------------------------------------- 펀치 관련 -------------------------------------------------------------	        
-	        //펀치 구현
+	/*        //펀치 구현
 	        if(punch == true)
 	        {
 	        	if(xDirection<0){
@@ -642,9 +625,10 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	        	적rectY[i] += 100;
 	        }
 	        }
+	        */
 //-------------------------------------------------------- 펀치 관련 -------------------------------------------------------------	       	
 //-------------------------------------------------------- 총 관련 -------------------------------------------------------------	 
-	        //총이 켜졌을경우
+	/*        //총이 켜졌을경우
 	        if(총 == true)
 	        {
 	        	if(xDirection<0){
@@ -757,7 +741,8 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		        }
 		        총알 = false;
 	        }
-	        }
+	        } 
+	        */
 	        // 피버타임 구현
 			if  (Hp <= 200 && Hp >= 50 && 피버 == true) { //체력이 일정 수준 이하로 떨어졌을 시 발동
 	        	g.drawImage(coin2.getImage(), rectX[0], rectY[0], this);
