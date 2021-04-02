@@ -12,20 +12,16 @@ public class Character {
     public void move() {
     	setX(getX()+ getXDirection());
     	setY(getY()+ getYDirection());
-       // x += xDirection;
-       // y += YDirection;
         if(getX() <= 0)
         	setX(0);
         if(getX() >= WIDTH - circleSize) {
         	setX(WIDTH - circleSize);
         }
         if(getY() <= circleSize) {
-        	//y = circleSize;
         	setY(circleSize);
         }
         if(getY() >= WIDTH - circleSize)
         {
-            //    y = WIDTH - circleSize;
         	setY(WIDTH - circleSize);
         }
     }
