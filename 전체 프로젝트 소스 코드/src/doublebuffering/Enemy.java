@@ -4,7 +4,7 @@ import java.awt.Font;
 
 import javax.swing.ImageIcon;
 
-public class enemy {
+public class Enemy {
 	ImageIcon 적 = new ImageIcon("src/IMAGE/enemy.png");
     ImageIcon 적2 = new ImageIcon("src/IMAGE/적2.gif");
     ImageIcon 적3 = new ImageIcon("src/IMAGE/적3.png");

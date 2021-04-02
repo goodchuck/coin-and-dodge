@@ -1,6 +1,6 @@
 package doublebuffering;
 
-public class Object {
+public class Object { //속도를 빠르게해주는 object용 클래스
 	boolean 속2 = false;
 	private int 속rectX;
 	private int 속rectY;

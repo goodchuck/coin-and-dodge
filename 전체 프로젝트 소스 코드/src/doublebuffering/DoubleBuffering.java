@@ -42,7 +42,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
     
     // 캐릭터 위치, 점수, 더블 버퍼링, 이미지 변수, 마우스 변수, 승리 판정 변수 선언
 	GamePanel  gamepanel=new GamePanel();
-	enemy enemy = new enemy();
+	Enemy enemy = new Enemy();
 	Character ch = new Character();
 	Object ob = new Object();
     int score = 0,  충카 = 0, 난이도 = 0;
