@@ -542,52 +542,54 @@ public class DoubleBuffering extends JFrame implements Runnable {
 		        }
 //-------------------------------------------------------- 충돌 관련 -------------------------------------------------------------		        
 //-------------------------------------------------------- 펀치 관련 -------------------------------------------------------------	        
-	/*        //펀치 구현
+	        //펀치 구현
 	        if(punch == true)
 	        {
-	        	if(xDirection<0){
-	        		g.drawImage(펀치왼.getImage(), x-40,y,this);
+	        	if(ch.getXDirection()<0){
+	        		g.drawImage(펀치왼.getImage(), ch.getX()-40,ch.getY(),this);
 	        		repaint();
 	        	}
-	        	if(xDirection>0) {
-		        	g.drawImage(펀치오.getImage(), x+40,y,this);
+	        	if(ch.getXDirection()>0) {
+		        	g.drawImage(펀치오.getImage(), ch.getX()+40,ch.getY(),this);
 		        	repaint();
 	        	}
-	        	if(yDirection>0) {
-		        	g.drawImage(펀치아.getImage(), x,y+40,this);
+	        	if(ch.getYDirection()>0) {
+		        	g.drawImage(펀치아.getImage(), ch.getX(),ch.getY()+40,this);
 		        	repaint();
 	        	}
-	        	if(yDirection<0) {
-		        	g.drawImage(펀치위.getImage(), x,y-40,this);
+	        	if(ch.getYDirection()<0) {
+		        	g.drawImage(펀치위.getImage(), ch.getX(),ch.getY()-40,this);
 		        	repaint();
 	        	}
         	}
 	        
         	
         	//펀치를 맞았을때 밀릴수있게
-	        for(int i = 0; i <=5; i++) {
 	        //왼쪽으로 맞음
-	        if(punch == true && (적rectX[i] - 50 < x) &&  x-100 < 적rectX[i] + 50 && 적rectY[i] - 50 < y && y < 적rectY[i] + 50 )
+	        if(punch == true && (enemy.getErectX1() - 50 < ch.getX()) &&  ch.getX()-100 < enemy.getErectX1() + 50 && enemy.getErectY1() - 50 < ch.getY() && ch.getY() < enemy.getErectY1() + 50 )
 	        {
-	        	적rectX[i] -= 100;
+	        	//적rectX[i] -= 100;
+	        	enemy.setErectX1(enemy.getErectX1()-100);
 	        }
 	        //오른쪽
-	        if(punch == true && (적rectX[i] - 50 < x+100) &&  x < 적rectX[i] + 50 && 적rectY[i] - 50 < y && y< 적rectY[i] + 50 )
+	        if(punch == true && (enemy.getErectX1() - 50 < ch.getX()+100) &&  ch.getX() < enemy.getErectX1() + 50 && enemy.getErectY1() - 50 < ch.getY() && ch.getY() < enemy.getErectY1() + 50 )
 	        {
-	        	적rectX[i] += 100;
+	        	//적rectX[i] += 100;
+	        	enemy.setErectX1(enemy.getErectX1()+100);
 	        }
 	        //위
-	        if(punch == true && (적rectX[i] - 50 < x) &&  x < 적rectX[i] + 50 && 적rectY[i] - 50 < y&& y-100< 적rectY[i] + 50 )
+	        if(punch == true && (enemy.getErectX1() - 50 < ch.getX()) &&  ch.getX() < enemy.getErectX1() + 50 && enemy.getErectY1() - 50 < ch.getY()&& ch.getY()-100< enemy.getErectY1() + 50 )
 	        {
-	        	적rectY[i] -= 100;
+	        	//적rectY[i] -= 100;
+	        	enemy.setErectY1(enemy.getErectY1()-100);
 	        }
 	        //아래
-	        if(punch == true && (적rectX[i] - 50 < x) &&  x < 적rectX[i] + 50 && 적rectY[i] - 50 < y+100 && y< 적rectY[i] + 50 )
+	        if(punch == true && (enemy.getErectX1() - 50 < ch.getX()) &&  ch.getX() < enemy.getErectX1() + 50 && enemy.getErectY1() - 50 < ch.getY()+100 && ch.getY()< enemy.getErectY1() + 50 )
 	        {
-	        	적rectY[i] += 100;
+	        	//적rectY[i] += 100;
+	        	enemy.setErectY1(enemy.getErectY1()+100);
 	        }
-	        }
-	        */
+	        
 //-------------------------------------------------------- 펀치 관련 -------------------------------------------------------------	       	
 //-------------------------------------------------------- 총 관련 -------------------------------------------------------------	 
 	/*        //총이 켜졌을경우
@@ -705,6 +707,7 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	        }
 	        } 
 	        */
+//	        -------------------------------------------------------- 총 관련 -------------------------------------------------------------
 	        // 피버타임 구현
 			if  (Hp <= 200 && Hp >= 50 && 피버 == true) { //체력이 일정 수준 이하로 떨어졌을 시 발동
 	        	g.drawImage(coin2.getImage(), rectX[0], rectY[0], this);
@@ -715,15 +718,9 @@ public class DoubleBuffering extends JFrame implements Runnable {
 	        	g.drawImage(coin2.getImage(), rectX[7], rectY[7], this);
 	        	ob.set속2(true);   // 코인 생성 4배 + 속도 증가
 	        	g.drawString("FEVER TIME!!!", 300, 700);
-	        } else {
-	        	
 	        }
 		}
 	}
-//-------------------------------------------------------- 총 관련 -------------------------------------------------------------
-
-
-
 
 	}
 	
